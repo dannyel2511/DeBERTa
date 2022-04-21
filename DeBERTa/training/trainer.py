@@ -135,7 +135,7 @@ class DistributedTrainer:
       batch_sampler = BatchSampler(self.train_sampler, self.args.train_batch_size)
       batch_sampler = DistributedBatchSampler(batch_sampler, rank = rank, world_size = world_size)
       batch_sampler.next = self.trainer_state.next_batch
-      num_workers = getattr(self.args, 'workers', 2)
+      num_workers = getattr(self.args, 'workers', 0)
       train_dataloader = DataLoader(self.train_data, batch_sampler=batch_sampler, num_workers=num_workers, worker_init_fn=self.init_fn, pin_memory=False)
       torch.cuda.empty_cache()
       for step, batch in enumerate(AsyncDataLoader(train_dataloader, 100)):

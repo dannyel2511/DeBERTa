@@ -82,12 +82,13 @@ case ${init,,} in
 esac
 
 python -m DeBERTa.apps.run --model_config config.json  \
+	--distributed_backend smddp \
 	--tag $tag \
 	--do_train \
 	--use_mpi 1 \
-	--num_training_steps 1000 --warmup_proportion 0.1 \
+	--num_training_steps 100000 --warmup_proportion 0.1 \
 	--max_seq_len $max_seq_length \
-	--dump_interval 100 \
+	--dump_interval 10000 \
 	--task_name $Task \
 	--data_dir $data_dir \
 	--vocab_path $cache_dir/spm.model \

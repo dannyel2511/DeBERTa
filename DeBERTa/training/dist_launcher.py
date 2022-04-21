@@ -16,6 +16,8 @@ from collections import defaultdict
 import sys
 import psutil
 from ..utils import set_logger, get_logger
+import smdistributed.dataparallel.torch.torch_smddp
+
 logger = get_logger()
 
 def kill_children(proc=None, recursive = True):

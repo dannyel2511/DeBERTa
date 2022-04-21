@@ -416,6 +416,7 @@ def build_argument_parser():
             help="The loss function used to calculate adversarial loss. It can be one of symmetric-kl, kl or mse.")
 
   parser.add_argument('--use_mpi', default=0, type=int, help="Use mpi assumes all processes have been launched, else we fork to create processes")
+  parser.add_argument('--distributed_backend', default="nccl", type=str, help="Indicate distribution backend engine")
 
   return parser
 
