@@ -4,7 +4,8 @@ SCRIPT_DIR=$(dirname "$SCRIPT")
 cd $SCRIPT_DIR
 echo $PYTHONPATH
 
-# cache_dir=/tmp/DeBERTa/MLM/
+# export HERRING_DEFAULT_TIMEOUT_MS=900000
+
 max_seq_length=512
 
 cache_dir=/opt/ml/input/data/train
@@ -19,7 +20,7 @@ function setup_wiki_data(){
 
 	if [[ ! -e  $data_dir/test.txt ]]; then
 		wget -q https://s3.amazonaws.com/research.metamind.io/wikitext/wikitext-103-v1.zip -O $cache_dir/wiki103.zip
-		unzip -j $cache_dir/wiki103.zip -d $cache_dir/wiki103
+		unzip -j -o $cache_dir/wiki103.zip -d $cache_dir/wiki103
 		mkdir -p $data_dir
 		python ./prepare_data.py -i $cache_dir/wiki103/wiki.train.tokens -o $data_dir/train.txt --max_seq_length $max_seq_length
 		python ./prepare_data.py -i $cache_dir/wiki103/wiki.valid.tokens -o $data_dir/valid.txt --max_seq_length $max_seq_length
@@ -27,7 +28,7 @@ function setup_wiki_data(){
 	fi
 }
 
-#setup_wiki_data
+# setup_wiki_data
 
 Task=MLM
 
@@ -46,7 +47,7 @@ case ${init,,} in
 	deberta-base)
 	parameters=" --num_train_epochs 1 \
 	--model_config deberta_base.json \
-	--warmup 10000 \
+	--warmup 10 \
 	--learning_rate 1e-4 \
 	--train_batch_size 256 \
 	--max_ngram 3 \
@@ -86,9 +87,9 @@ python -m DeBERTa.apps.run --model_config config.json  \
 	--tag $tag \
 	--do_train \
 	--use_mpi 1 \
-	--num_training_steps 100000 --warmup_proportion 0.1 \
+	--num_training_steps 1000 --warmup_proportion 0.1 \
 	--max_seq_len $max_seq_length \
-	--dump_interval 10000 \
+	--dump_interval 100 \
 	--task_name $Task \
 	--data_dir $data_dir \
 	--vocab_path $cache_dir/spm.model \
