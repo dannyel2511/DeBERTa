@@ -94,6 +94,7 @@ python -m DeBERTa.apps.run --model_config config.json  \
 	--data_dir $data_dir \
 	--vocab_path $cache_dir/spm.model \
 	--vocab_type spm \
-	--output_dir /opt/ml/checkpoints $parameters
+	--output_dir /opt/ml/checkpoints $parameters \
+    --workers 0
 
 ls /opt/ml/checkpoints/
