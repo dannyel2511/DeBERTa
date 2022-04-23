@@ -17,7 +17,10 @@ def merge_distributed(data_list, max_len=None):
     return data_chunks
 
   for data in data_list:
-    if torch.distributed.is_initialized() and torch.distributed.get_world_size()>1:
+    # Disable gather for now. It causes a hang while performing GPU operations.
+    # It is independent of DDP backend.
+    enableGather = False
+    if enableGather and torch.distributed.is_initialized() and torch.distributed.get_world_size()>1:
       if isinstance(data, Sequence):
         data_chunks = []
         for d in data:
