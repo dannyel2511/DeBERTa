@@ -222,7 +222,9 @@ dataset_size = dataset_size, shuffle=True, **kwargs)
         name = eval_item.name
         eval_sampler = SequentialSampler(len(eval_item.data))
         batch_sampler = BatchSampler(eval_sampler, args.eval_batch_size)
-        batch_sampler = DistributedBatchSampler(batch_sampler, rank=args.rank, world_size=args.world_size)
+        # Make rank 0 the only one responsible for evaluation.
+        # Workaround for hanging issue triggered by merging distributed data.
+        batch_sampler = DistributedBatchSampler(batch_sampler, rank=0, world_size=1)
         eval_dataloader = DataLoader(eval_item.data, batch_sampler=batch_sampler, num_workers=args.workers)
         model.eval()
         eval_loss, eval_accuracy = 0, 0

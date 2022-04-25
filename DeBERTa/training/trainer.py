@@ -161,6 +161,10 @@ class DistributedTrainer:
     return save_path
 
   def _eval_model(self, with_checkpoint=True):
+    # Make rank 0 the only one responsible for evaluation.
+    # Workaround for hanging issue triggered by merging distributed data.
+    if (self.args.rank != 0):
+      return
     if with_checkpoint:
       checkpoint_dir = getattr(self.args, 'checkpoint_dir', None)
       checkpoint_dir = checkpoint_dir if checkpoint_dir is not None else self.output_dir
